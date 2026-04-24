@@ -5,15 +5,39 @@ const Events = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const bookEvent = async (event_id, price) => {
+  try {
+    
+     const confirm = window.confirm(
+      `This event costs KES ${price}. Proceed?`
+     );
+     if (!confirm) return;
+
+    const response = await axios.post("http://127.0.0.1:5000/book", {
+      username,
+      event_id
+    });
+
+    alert(`Paid KES ${response.data.price} successfully!`);
+
+    console.log("QR:", response.data.qr_code);
+
+  } catch (error) {
+    console.log("Booking error:", error);
+  }
+};
+
   // fetch events from backend
   const fetchEvents = async () => {
     setLoading(true);
     try {
       const response = await axios.get("http://127.0.0.1:5000/events");
+      console.log("API RESPONSE:", response.data);
       setEvents(response.data);
     } catch (error) {
-      console.log("Error fetching events");
-    } finally {
+  console.log("Error fetching events:", error);
+}
+     finally {
       setLoading(false);
     }
   };
@@ -21,6 +45,8 @@ const Events = () => {
   useEffect(() => {
     fetchEvents();
   }, []);
+
+
 
   return (
     <div className="container mt-4">
@@ -45,10 +71,14 @@ const Events = () => {
                 <h5>{event.name}</h5>
                 <p>Date: {event.date}</p>
                 <p>Location: {event.location}</p>
+                <p>Price: KES {event.price}</p>
 
-                <button className="btn btn-primary w-100">
-                  Book Ticket
-                </button>
+                <button
+  className="btn btn-primary w-100"
+  onClick={() => bookEvent(event.id, event.price)}>
+
+  Book Ticket
+</button>
               </div>
 
             </div>

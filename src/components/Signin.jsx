@@ -3,13 +3,13 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 const Signin = () => {
+
+  const navigate = useNavigate(); 
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const navigate = useNavigate();
 
   const submit = async (e) => {
     e.preventDefault();
@@ -27,12 +27,12 @@ const Signin = () => {
         data
       );
 
-      // save user (optional)
+    
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
       alert(response.data.message);
 
-      // redirect after login
+      
       navigate("/events");
 
     } catch (err) {
